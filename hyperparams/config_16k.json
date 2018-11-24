@@ -1,4 +1,5 @@
 {
+  "sampling_rate": 16000,
   "train_config": {
       "output_directory": "checkpoints",
       "epochs": 100000,

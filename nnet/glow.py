@@ -177,7 +177,7 @@ class WaveGlow:
     with tf.variable_scope(self.name, reuse=reuse):
       c = tf.transpose(inputs["cond"], (0, 2, 1))
       us_cond = self.up_sample(c)
-      batch_size, time_steps, us_frames = tf.shape(c)
+      batch_size, us_frames = tf.shape(us_cond)[0], tf.shape(us_cond)[2]
       n_of_groups = tf.div(us_frames, self.n_group)
       us_cond_group = tf.reshape(us_cond[:, :, :n_of_groups*self.n_group],
                                  [batch_size, self.up_sample_channels, n_of_groups, self.n_group])
@@ -205,5 +205,5 @@ class WaveGlow:
           if idx % self.n_early_every == 0 and idx > 0:
             z = tf.random_normal(shape=(batch_size, self.n_early_size, n_of_groups), stddev=sigma)
             x_group = tf.concat([z, x_group], axis=1)
-      x = tf.reshape(tf.transpose(x_group, (0, 2, 1)), (batch_size, n_of_groups*self.n_group)
+      x = tf.reshape(tf.transpose(x_group, (0, 2, 1)), [batch_size, n_of_groups*self.n_group])
       return {"x": x}
