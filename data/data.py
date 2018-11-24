@@ -13,17 +13,10 @@ def parse_single_example(cond_dims):
         parsed = tf.parse_single_example(example_proto, features=features)
         sr = tf.cast(parsed["sr"], tf.int32)
         key = parsed["key_raw"]
-        # NOTE: little-endian
-        label_f, label_c = tf.split(tf.reshape(tf.decode_raw(parsed["wav_raw"], tf.uint8), (-1, 2)), 2, axis=-1)  # label_c shape := (width, 1)
-        label_f, label_c = tf.cast(label_f, tf.int32), tf.cast(label_c, tf.int32)
-        label_c = tf.where(tf.less(label_c, 128),
-                            x=label_c,  # pos [0, 127]
-                            y=label_c - 256)    # neg [128, 255] -> [-128, -1]
-        label_c = label_c + 128     # [0, 255]
         wav = tf.reshape(tf.divide(tf.cast(tf.decode_raw(parsed["wav_raw"], tf.int16), dtype=tf.float32), 32768), (-1, 1))  # shape := (width, 1)
         frames = tf.cast(parsed["frames"], tf.int32)
         cond = tf.reshape(tf.decode_raw(parsed["cond"], tf.float32), (frames, cond_dims))
-        return {"sr": sr, "key": key, "wav": wav, "cond": cond, "label_c": label_c, "label_f": label_f}
+        return {"sr": sr, "key": key, "wav": wav, "cond": cond}
     return __parse_single_example
 
 
@@ -46,9 +39,7 @@ def crop_cond_wav(crop_frames, hop_length):
         crop_samples = (crop_frames - 1) * hop_length + 1
         crop_cond = tf.slice(inputs["cond"], [cond_random_offset, 0], [crop_frames, -1])  # use real crop frames
         crop_wav = tf.slice(inputs["wav"], [wav_random_offset, 0], [crop_samples, -1])
-        crop_label_c = tf.slice(inputs["label_c"], [wav_random_offset, 0], [crop_samples, -1])
-        crop_label_f = tf.slice(inputs["label_f"], [wav_random_offset, 0], [crop_samples, -1])
-        return {"sr": inputs["sr"], "key": inputs["key"], "wav": crop_wav, "cond": crop_cond, "label_c": crop_label_c, "label_f": crop_label_f}
+        return {"sr": inputs["sr"], "key": inputs["key"], "wav": crop_wav, "cond": crop_cond}
     return __crop
 
 
@@ -59,13 +50,13 @@ def filter_predictor(crop_frames, hop_length):
     return __predictor
 
 
-def get_dataset(tfrecord_path, batch_size=16, crop_frames=40, hop_length=200, cond_dims=80, train_phase=True):
+def get_dataset(tfrecord_path, batch_size=16, crop_frames=40, hop_length=200, cond_dims=80, train_phase=True, shuffle_buffer_size=2000):
     dataset = tf.data.TFRecordDataset(tfrecord_path)
     dataset = dataset.map(parse_single_example(cond_dims))
     if train_phase:
         dataset = dataset.filter(filter_predictor(crop_frames, hop_length))
         dataset = dataset.map(crop_cond_wav(crop_frames, hop_length))
-        dataset = dataset.shuffle(10000).batch(batch_size).repeat()
+        dataset = dataset.shuffle(shuffle_buffer_size).batch(batch_size).repeat()
     else:
         dataset = dataset.batch(1)
     return dataset

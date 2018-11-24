@@ -11,13 +11,9 @@
       "checkpoint_path": ""
   },
   "data_config": {
-      "crop_frames": 10,
+      "crop_frames": 80,
       "hop_length": 200,
       "cond_dims": 80
-  },
-  "dist_config": {
-      "dist_backend": "nccl",
-      "dist_url": "tcp://localhost:54321"
   },
   "waveglow_config": {
       "n_flows": 12,

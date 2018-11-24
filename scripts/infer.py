@@ -10,12 +10,11 @@ from models.WaveGlow.data.data import get_dataset
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
-MOVING_AVERAGE_DECAY = 0.9999
-
+MOVING_AVERAGE_DECAY = 0.9999 
 def get_args():
     parser = argparse.ArgumentParser(description="Train WaveGlow!")
     parser.add_argument("--data_path", type=str, default="./assets/tfrecords")
-    parser.add_argument("--log_dir", type=str, default="./assets/logs-wn")
+    parser.add_argument("--log_dir", type=str, default="./assets/logs")
     parser.add_argument("--hp_path", type=str, default="./hyperparams/config_16k.json")
     parser.add_argument("--sigma", type=float, default=0.6)
     return parser.parse_args()
@@ -50,9 +49,7 @@ def main():
         saver = tf.train.Saver(var_list=all_var_dic)
         saver = tf.train.Saver()
 
-    config = tf.ConfigProto(device_count = {"CPU": 12},
-                            inter_op_parallelism_threads=6,)
-                            #intra_op_parallelism_threads=1)
+    config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     config.graph_options.optimizer_options.global_jit_level = tf.OptimizerOptions.ON_1
     with tf.Session(graph=graph, config=config) as sess:

@@ -17,10 +17,10 @@ NUM_GPUS_DEFAULT = len(os.environ["CUDA_VISIBLE_DEVICES"].split(","))
 def get_args():
     parser = argparse.ArgumentParser(description="Train WaveGlow!")
     parser.add_argument("--data_dir", type=str, default="./assets/tfrecords")
-    parser.add_argument("--log_dir", type=str, default="./assets/logs-wn")
+    parser.add_argument("--log_dir", type=str, default="./assets/logs")
     parser.add_argument("--hp_path", type=str, default="./hyperparams/config_16k.json")
-    parser.add_argument("--steps", type=int, default=600000)
-    parser.add_argument("--batch_size", type=int, default=4*NUM_GPUS_DEFAULT)
+    parser.add_argument("--steps", type=int, default=400000)
+    parser.add_argument("--batch_size", type=int, default=2*NUM_GPUS_DEFAULT)
     parser.add_argument("--save_per_steps", type=int, default=10000)
     parser.add_argument("--dev_per_steps", type=int, default=100)
     # multi-gpu config

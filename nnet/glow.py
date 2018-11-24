@@ -1,6 +1,7 @@
 import tensorflow as tf
 from scipy.stats import ortho_group
 import numpy as np
+import math
 
 jit_scope = tf.contrib.compiler.jit.experimental_jit_scope
 
@@ -14,18 +15,20 @@ def fused_add_tanh_sigmoid_multiply(input_a, input_b, name=None):
       return acts
 
 
-def wave_glow_loss(sigma=1.0):
+def wave_glow_loss(sigma=1.0, name=None):
   def _loss(z, log_s_list, log_det_W_list):
-    for i, log_s in enumerate(log_s_list):
-      if i == 0:
-        log_s_total = tf.reduce_sum(log_s)
-        log_det_W_total = log_det_W_list[i]
-      else:
-        log_s_total = log_s_total + tf.reduce_sum(log_s)
-        log_det_W_total += log_det_W_list[i]
+    with tf.name_scope(name, "wave_glow_loss"):
+      for i, log_s in enumerate(log_s_list):
+        if i == 0:
+          log_s_total = tf.reduce_sum(log_s)
+          log_det_W_total = log_det_W_list[i]
+        else:
+          log_s_total = log_s_total + tf.reduce_sum(log_s)
+          log_det_W_total += log_det_W_list[i]
     
-    loss = tf.reduce_sum(z*z) / (2*sigma*sigma) - log_s_total - log_det_W_total
-    return loss / tf.cast(tf.size(z), tf.float32)
+      loss = tf.reduce_sum(z*z) / (2*sigma*sigma) - log_s_total - log_det_W_total
+      loss = loss / tf.cast(tf.size(z), tf.float32)
+      return loss
   return _loss
 
 
