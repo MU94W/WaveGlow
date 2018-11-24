@@ -7,7 +7,7 @@ import os
 import argparse
 import tqdm
 import random
-from models.WaveGlow.utils.audio import get_mel, get_mel_filterbank, get_stftm, log_compress, preemphasis
+from utils.audio import get_mel, get_mel_filterbank, get_stftm, log_compress, preemphasis
 
 
 def get_arguments():

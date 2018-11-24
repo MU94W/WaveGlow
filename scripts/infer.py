@@ -5,8 +5,8 @@ import tqdm
 import json
 import scipy.io.wavfile as siowav
 import numpy as np
-from models.WaveGlow.nnet.glow import WaveGlow as Config
-from models.WaveGlow.data.data import get_dataset
+from nnet.glow import WaveGlow as Config
+from data.data import get_dataset
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 

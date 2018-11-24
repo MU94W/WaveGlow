@@ -3,9 +3,9 @@ import tensorflow as tf
 import os
 import tqdm
 import json
-from models.WaveGlow.nnet.glow import WaveGlow as Config
-from models.WaveGlow.data.data import get_dataset
-from models.WaveGlow.utils.multi_gpu import average_gradients
+from nnet.glow import WaveGlow as Config
+from data.data import get_dataset
+from utils.multi_gpu import average_gradients
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
