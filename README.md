@@ -1,2 +1,2 @@
 # WaveGlow
-WAVEGLOW: A FLOW-BASED GENERATIVE NETWORK FOR SPEECH SYNTHESIS
+A TensorFlow implementation of [WaveGlow](https://github.com/NVIDIA/waveglow)
