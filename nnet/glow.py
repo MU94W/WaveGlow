@@ -50,7 +50,7 @@ def invertible1x1conv(z, reverse=False, name="invertible1x1conv", reuse=tf.AUTO_
       return z
     else:
       batch_size, n_of_groups = tf.shape(z)[0], tf.shape(z)[2]
-      log_det_W = tf.cast(batch_size, tf.float32) * tf.cast(n_of_groups, tf.float32) * tf.log(tf.linalg.det(tf.squeeze(kernel, axis=0)))
+      log_det_W = tf.cast(batch_size, tf.float32) * tf.cast(n_of_groups, tf.float32) * tf.log(tf.abs(tf.linalg.det(tf.squeeze(kernel, axis=0))))
       z = tf.nn.conv1d(z, kernel, stride=1, padding="VALID", data_format="NCW")
       return z, log_det_W
 

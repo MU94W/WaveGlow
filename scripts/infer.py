@@ -47,7 +47,7 @@ def main():
 
         # get saver.
         saver = tf.train.Saver(var_list=all_var_dic)
-        saver = tf.train.Saver()
+        #saver = tf.train.Saver()
 
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
