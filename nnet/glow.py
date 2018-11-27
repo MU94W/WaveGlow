@@ -40,8 +40,8 @@ def invertible1x1conv(z, reverse=False, name="invertible1x1conv", reuse=tf.AUTO_
   with tf.variable_scope(name, reuse=reuse):
     n_channels = z.shape[1].value
     kernel_data_init = np.linalg.qr(np.random.randn(n_channels, n_channels))[0].astype(np.float32)
-    #if np.linalg.det(kernel_data_init) < 0.:
-    #  kernel_data_init[:, 0] = -1. * kernel_data_init[:, 0]
+    if np.linalg.det(kernel_data_init) < 0.:
+      kernel_data_init[:, 0] = -1. * kernel_data_init[:, 0]
     kernel_data_init = np.expand_dims(kernel_data_init, axis=0)
     kernel = tf.get_variable(name="kernel", shape=(1, n_channels, n_channels), initializer=tf.initializers.constant(kernel_data_init), dtype=tf.float32)
     if reverse:
