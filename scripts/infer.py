@@ -51,7 +51,7 @@ def main():
 
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
-    config.graph_options.optimizer_options.global_jit_level = tf.OptimizerOptions.ON_1
+    #config.graph_options.optimizer_options.global_jit_level = tf.OptimizerOptions.ON_1
     with tf.Session(graph=graph, config=config) as sess:
         # get checkpoint
         save_dir = os.path.join(args.log_dir, "save")

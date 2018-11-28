@@ -8,11 +8,11 @@ jit_scope = tf.contrib.compiler.jit.experimental_jit_scope
 
 def fused_add_tanh_sigmoid_multiply(input_a, input_b, name=None):
   with tf.name_scope(name, "fused_add_tanh_sigmoid_multiply", [input_a, input_b]) as scope:
-    with jit_scope():
-      in_act = input_a + input_b
-      t_logits, s_logits = tf.split(in_act, num_or_size_splits=2, axis=1)
-      acts = tf.nn.tanh(t_logits) * tf.nn.sigmoid(s_logits)
-      return acts
+    #with jit_scope():
+    in_act = input_a + input_b
+    t_logits, s_logits = tf.split(in_act, num_or_size_splits=2, axis=1)
+    acts = tf.nn.tanh(t_logits) * tf.nn.sigmoid(s_logits)
+    return acts
 
 
 def wave_glow_loss(sigma=1.0, name=None):
